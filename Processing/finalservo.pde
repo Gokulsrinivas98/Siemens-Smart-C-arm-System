@@ -6,7 +6,7 @@ LeapMotion leap;
 Serial port;
 
 
-int angle1,angle2,xpos;
+int angle1,angle2,xpos,ypos;
 
 void setup() {
   size(800, 500);
@@ -18,7 +18,7 @@ void setup() {
   
   //println("Available serial ports:");
   //println(Serial.list());
-  port = new Serial(this,"COM9", 9600);
+  port = new Serial(this,"COM6", 9600);
   
 }
 
@@ -76,30 +76,43 @@ void draw() {
     //println( handRoll);
     //println("Yaw");
     //println( handYaw);
-    
-    if ((handRoll > 2) && (handYaw < -2))
+     
+     
+    if ((handRoll > 0) && (handYaw < 0))
     {
-      /*float angles = handYaw*2;
+      float angles = handYaw*2;
       float angless = handRoll*2;
       angle1 = int(angles)*(-1);
-      angle2 = int(angless);*/
+      angle2 = int(angless);
       
-      if (handPosition.x > -750 && handPosition.x < 150) {
+      if (handPosition.x > 0 && handPosition.x < 226) {
         xpos = 1;
      } 
-      /*else if (handPosition.x < 550 && handPosition.x >150) {
+      else if (handPosition.x < 452 && handPosition.x >226) {
        xpos = 0;
-       } */
+       } 
    
-   else if (handPosition.x < 1000 && handPosition.x >550){
+   else if (handPosition.x < 680 && handPosition.x >452){
      xpos = 2;
     }
       
+      if (handPosition.y > 50 && handPosition.y < 240) {
+        ypos = 1;
+     } 
+      else if (handPosition.y < 350 && handPosition.y >240) {
+       ypos = 0;
+       } 
+   
+   else if (handPosition.y < 440 && handPosition.y >350){
+     ypos = 2;
+    }
       
-        byte out[] = new byte[1];
+        byte out[] = new byte[4];
 
-      out[0] = byte(xpos);
-      //out[1] = byte(angle2);
+      out[0] = byte(angle1);
+      out[1] = byte(angle2);
+      out[2] = byte(xpos);
+      out[3] = byte(ypos);
       
       println(out);
       

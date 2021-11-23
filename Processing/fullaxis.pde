@@ -1,3 +1,5 @@
+
+
 import de.voidplus.leapmotion.*;
 
 import processing.serial.*;
@@ -6,10 +8,12 @@ LeapMotion leap;
 Serial port;
 
 
-int angle1,angle2,xpos;
+int angle1 =0 ,angle2 = 0, xpos= 0 ,ypos = 0;
+
+int handgrab = 0;
 
 void setup() {
-  size(800, 500);
+  size(1366, 500);
   background(0);
   fill(130);
   // ...
@@ -18,7 +22,7 @@ void setup() {
   
   //println("Available serial ports:");
   //println(Serial.list());
-  port = new Serial(this,"COM9", 9600);
+  port = new Serial(this,"COM6", 9600);
   
 }
 
@@ -39,7 +43,7 @@ void leapOnExit() {
 }
 
 void draw() {
-  background(255);
+  background(211, 33, 27);
   // ...
 
 
@@ -76,30 +80,58 @@ void draw() {
     //println( handRoll);
     //println("Yaw");
     //println( handYaw);
-    
-    if ((handRoll > 2) && (handYaw < -2))
-    {
-      /*float angles = handYaw*2;
+     
+     
+     if(handGrab > 0.77)
+     {
+       handgrab = 1;
+     }
+     else{
+     handgrab = 0;
+     
+     }
+     
+     
+     if(handgrab == 1 && handIsRight)
+     {
+       
+      if ((handRoll > 0) && (handYaw < 0))
+      {
+      
+      
+      float angles = handYaw*2;
       float angless = handRoll*2;
       angle1 = int(angles)*(-1);
-      angle2 = int(angless);*/
+      angle2 = int(angless);
       
       if (handPosition.x > -750 && handPosition.x < 150) {
         xpos = 1;
      } 
-      /*else if (handPosition.x < 550 && handPosition.x >150) {
+      else if (handPosition.x < 550 && handPosition.x >150) {
        xpos = 0;
-       } */
+       } 
    
    else if (handPosition.x < 1000 && handPosition.x >550){
      xpos = 2;
     }
       
+      if (handPosition.y > -466 && handPosition.y < 80) {
+        ypos = 1;
+     } 
+      else if (handPosition.y < 270 && handPosition.y >80) {
+       ypos = 0;
+       } 
+   
+   else if (handPosition.y < 440 && handPosition.y >270){
+     ypos = 2;
+    }
       
-        byte out[] = new byte[1];
+        byte out[] = new byte[4];
 
-      out[0] = byte(xpos);
-      //out[1] = byte(angle2);
+      out[0] = byte(angle1);
+      out[1] = byte(angle2);
+      out[2] = byte(xpos);
+      out[3] = byte(ypos);
       
       println(out);
       
@@ -109,10 +141,24 @@ void draw() {
       //port.write(angle2);
      //println(angle1);
      //println(angle2);
-    }
+    
     
     hand.draw();
+     }
+     }
 
   }
+  if (leap.hasImages()) {
+    for (Image camera : leap.getImages()) {
+      if (camera.isLeft()) {
+        // left camera
+        image(camera, 0, 0);
+      } else {
+        // right camera
+        //image(camera, 0, camera.getHeight());
+      }
+    }
+  }
+  
   
 }
